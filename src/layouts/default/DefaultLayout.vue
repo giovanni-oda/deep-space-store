@@ -2,7 +2,7 @@
   <v-app>
     <default-bar />
 
-    <default-view />
+    <default-view class="bg-grey-lighten-5" />
   </v-app>
 </template>
 

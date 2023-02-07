@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto mx-4 my-8 elevation-4" width="344">
+  <v-card class="mx-auto mx-4 my-4 my-sm-8 elevation-3" width="344">
     <v-img class="ma-4" :src="props.image" height="200px"></v-img>
 
     <v-card-title> {{ props.title }} </v-card-title>
@@ -7,7 +7,9 @@
     <v-card-subtitle> U$ {{ props.price }} </v-card-subtitle>
 
     <v-card-actions>
-      <v-btn color="primary" variant="text"> See Details </v-btn>
+      <v-btn color="primary" variant="text" @click="viewDetails()">
+        See Details
+      </v-btn>
 
       <v-spacer></v-spacer>
 
@@ -31,10 +33,11 @@
 
 <script setup>
 // imports
-import { ref } from "vue";
+import { ref, defineEmits } from "vue";
 
 // constants
-const props = defineProps(["id", "title", "price", "description", "image"]);
+const props = defineProps(["title", "price", "description", "image"]);
+const emit = defineEmits(["goto-product"]);
 
 // state
 const show = ref(false);
@@ -42,6 +45,11 @@ const show = ref(false);
 // computed
 
 // hooks
+
+// methods
+function viewDetails() {
+  emit("goto-product");
+}
 </script>
 
 <style>

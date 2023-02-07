@@ -19,11 +19,25 @@ export const useProductStore = defineStore({
       const { data, error } = await useFetch(
         "https://fakestoreapi.com/products"
       );
-      console.log("data.value", data.value);
+      // console.log("data.value", data.value);
       if (!error.value) this.products = data.value;
       else {
         // TODO: handle error - send feedback to user.
       }
+    },
+    async fetchProduct(id) {
+      const { data, error } = await useFetch(
+        `https://fakestoreapi.com/products/${id}`
+      );
+      console.log("data.value", data.value);
+      if (!error.value) this.product = data.value;
+      else {
+        // TODO: handle error - send feedback to user.
+      }
+    },
+    updateProduct(prod) {
+      this.product = { ...prod };
+      console.log("this.product", this.product);
     },
   },
 });

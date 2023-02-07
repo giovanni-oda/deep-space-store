@@ -17,6 +17,28 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/products",
+    component: () => import("@/layouts/products/ProductsLayout.vue"),
+    children: [
+      {
+        path: "/products",
+        name: "products",
+        component: () =>
+          import(
+            /* webpackChunkName: "products" */ "@/views/products/ProductsIndex.vue"
+          ),
+      },
+      {
+        path: "/products/:id",
+        name: "productDetails",
+        component: () =>
+          import(
+            /* webpackChunkName: "products" */ "@/views/products/ProductDetails.vue"
+          ),
+      },
+    ],
+  },
 ];
 
 const router = createRouter({
