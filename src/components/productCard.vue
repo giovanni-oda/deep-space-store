@@ -13,10 +13,10 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn
-        :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-        @click="show = !show"
-      ></v-btn>
+      <v-btn icon @click="show = !show">
+        <v-icon>{{ show ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
+        <v-tooltip activator="parent" location="top"> Description </v-tooltip>
+      </v-btn>
     </v-card-actions>
 
     <v-expand-transition>

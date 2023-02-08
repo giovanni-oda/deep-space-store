@@ -52,7 +52,6 @@ onMounted(async () => {
 
 // Methods
 function goTo(product) {
-  console.log("prodId", product.id);
   productStore.updateProduct(product);
   router.push({ name: "productDetails", params: { id: product.id } });
 }
