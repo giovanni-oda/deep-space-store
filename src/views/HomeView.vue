@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home mb-8">
     <section>
       <div
         class="hero py-12 d-flex align-center justify-center position-relative hero-image"
@@ -13,6 +13,13 @@
           <h2 class="text-uppercase text-primary mt-4">
             Your One-Stop Shop for Out of This World Deals
           </h2>
+          <v-btn
+            color="primary"
+            class="text-white mt-4"
+            @click="router.push({ name: 'Products' })"
+          >
+            See our amazing products
+          </v-btn>
         </v-container>
         <v-img
           class="w-100 h-100 position-absolute"
@@ -92,11 +99,6 @@
         </v-row>
       </v-container>
     </section>
-    <section id="footer" class="pt-8 bg-primary">
-      <v-container class="fill-height">
-        <p>Footer</p>
-      </v-container>
-    </section>
   </div>
 </template>
 
@@ -128,7 +130,7 @@ function goTo(product) {
 
 // hooks
 onMounted(async () => {
-  productStore.fetchProducts();
+  if (products.value.length <= 0) productStore.fetchProducts();
 });
 </script>
 

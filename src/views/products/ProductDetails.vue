@@ -1,5 +1,5 @@
 <template>
-  <div class="product">
+  <div class="product mb-8">
     <v-container>
       <v-row>
         <v-col v-if="product">

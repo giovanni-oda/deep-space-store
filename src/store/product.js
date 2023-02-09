@@ -19,7 +19,7 @@ export const useProductStore = defineStore({
       const { data, error } = await useFetch(
         "https://fakestoreapi.com/products"
       );
-      // console.log("data.value", data.value);
+      console.log("fetched data from API", data.value);
       if (!error.value) this.products = data.value;
       else {
         // TODO: handle error - send feedback to user.
