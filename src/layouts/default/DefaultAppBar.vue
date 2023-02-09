@@ -12,8 +12,10 @@
           {{ item.title }}
         </a>
       </div>
+      <v-btn icon="mdi-cart" color="primary"></v-btn>
       <div class="d-sm-none">
-        <v-btn icon="menu" color="primary">
+        <v-btn icon="mdi-menu" color="primary">
+          <v-icon>mdi-menu</v-icon>
           <v-menu activator="parent">
             <v-list>
               <v-list-item
@@ -21,13 +23,16 @@
                 :key="index"
                 :value="index"
               >
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
+                <a :href="item.link" class="text-primary text-decoration-none">
+                  <v-list-item-title>
+                    {{ item.title }}
+                  </v-list-item-title>
+                </a>
               </v-list-item>
             </v-list>
           </v-menu>
         </v-btn>
       </div>
-      <v-btn icon="mdi-cart"></v-btn>
     </template>
   </v-app-bar>
 </template>

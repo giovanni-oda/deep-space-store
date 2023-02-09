@@ -5,7 +5,7 @@
       <v-btn variant="plain" color="primary" @click="router.go(-1)">
         GO BACK
       </v-btn>
-      <v-btn icon="mdi-cart"></v-btn>
+      <v-btn icon="mdi-cart" color="primary"></v-btn>
     </template>
   </v-app-bar>
 </template>
