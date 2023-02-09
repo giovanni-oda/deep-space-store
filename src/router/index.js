@@ -43,8 +43,19 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  scrollBehavior() {
-    return { top: 0 };
+  // scrollBehavior() {
+  //   return { top: 0 };
+  // },
+  scrollBehavior(to) {
+    if (to.hash) {
+      return {
+        el: to.hash,
+        top: +50,
+        behavior: "smooth",
+      };
+    } else {
+      return { top: 0 };
+    }
   },
   routes,
 });
