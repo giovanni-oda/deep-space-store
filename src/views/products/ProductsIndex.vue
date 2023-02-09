@@ -1,8 +1,8 @@
 <template>
   <div class="products-index">
     <section id="all" class="pt-8">
-      <v-container class="fill-height">
-        <v-row class="">
+      <v-container v-if="products.length > 0" class="fill-height">
+        <v-row>
           <v-col cols="12" sm="6" class="pl-8">
             <h3 class="text-primary text-uppercase">All Products</h3>
           </v-col>
@@ -24,7 +24,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col class="d-flex flex-wrap align-left" v-if="products.length > 0">
+          <v-col class="d-flex flex-wrap align-left">
             <product-card
               v-for="(product, index) in filteredProds"
               :key="index"
@@ -35,17 +35,17 @@
               @GotoProduct="goTo(product)"
             />
           </v-col>
-          <v-col v-else>
-            <div class="d-flex flex-column align-center">
-              <span class="mb-6">Please wait! Loading products...</span>
-              <v-progress-circular
-                indeterminate
-                color="primary"
-              ></v-progress-circular>
-            </div>
-          </v-col>
         </v-row>
       </v-container>
+      <div v-else>
+        <div class="d-flex flex-column align-center">
+          <span class="mb-6">Please wait! Loading products...</span>
+          <v-progress-circular
+            indeterminate
+            color="primary"
+          ></v-progress-circular>
+        </div>
+      </div>
     </section>
   </div>
 </template>

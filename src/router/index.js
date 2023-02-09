@@ -2,10 +2,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
+  // Default Layout
   {
     path: "/",
     component: () => import("@/layouts/default/DefaultLayout.vue"),
     children: [
+      // Home
       {
         path: "",
         name: "Home",
@@ -15,14 +17,9 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "home" */ "@/views/HomeView.vue"),
       },
-    ],
-  },
-  {
-    path: "/products",
-    component: () => import("@/layouts/products/ProductsLayout.vue"),
-    children: [
+      // Products
       {
-        path: "/products",
+        path: "products",
         name: "Products",
         component: () =>
           import(
@@ -30,11 +27,11 @@ const routes = [
           ),
       },
       {
-        path: "/products/:id",
+        path: "products/:id",
         name: "ProductDetails",
         component: () =>
           import(
-            /* webpackChunkName: "products" */ "@/views/products/ProductDetails.vue"
+            /* webpackChunkName: "productsDet" */ "@/views/products/ProductDetails.vue"
           ),
       },
     ],
@@ -49,9 +46,6 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  // scrollBehavior() {
-  //   return { top: 0 };
-  // },
   scrollBehavior(to) {
     if (to.hash) {
       return {

@@ -1,8 +1,14 @@
 <template>
   <v-app-bar flat>
-    <app-bar-title />
+    <Router-link
+      class="d-flex text-decoration-none text-primary"
+      :to="{ name: 'Home' }"
+    >
+      <img class="ml-4" width="32" src="@/assets/imgs/YS_Icon.png" />
+      <v-app-bar-title class="ml-3"> Deep Space Store </v-app-bar-title>
+    </Router-link>
     <template v-slot:append>
-      <div class="d-none d-sm-block">
+      <div v-if="route.name === 'Home'" class="d-none d-sm-block">
         <a
           v-for="item in menuItems"
           :key="item.id"
@@ -12,6 +18,9 @@
           {{ item.title }}
         </a>
       </div>
+      <v-btn v-else variant="plain" color="primary" @click="router.go(-1)">
+        GO BACK
+      </v-btn>
       <v-btn icon="mdi-cart" color="primary"></v-btn>
       <div class="d-sm-none">
         <v-btn icon="mdi-menu" color="primary">
@@ -39,7 +48,14 @@
 
 <script setup>
 // imports
-import appBarTitle from "@/components/appBarTitle.vue";
+import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
+
+// constants
+const route = useRoute();
+const router = useRouter();
+
+console.log("route", route);
 
 // state
 const menuItems = [
