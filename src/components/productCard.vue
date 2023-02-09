@@ -42,16 +42,8 @@ const emit = defineEmits(["goto-product"]);
 // state
 const show = ref(false);
 
-// computed
-
-// hooks
-
 // methods
 function viewDetails() {
   emit("goto-product");
 }
 </script>
-
-<style>
-/* // */
-</style>

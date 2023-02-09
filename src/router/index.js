@@ -23,7 +23,7 @@ const routes = [
     children: [
       {
         path: "/products",
-        name: "products",
+        name: "Products",
         component: () =>
           import(
             /* webpackChunkName: "products" */ "@/views/products/ProductsIndex.vue"
@@ -31,7 +31,7 @@ const routes = [
       },
       {
         path: "/products/:id",
-        name: "productDetails",
+        name: "ProductDetails",
         component: () =>
           import(
             /* webpackChunkName: "products" */ "@/views/products/ProductDetails.vue"
