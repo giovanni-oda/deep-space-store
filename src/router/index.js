@@ -39,6 +39,12 @@ const routes = [
       },
     ],
   },
+  // 404
+  {
+    path: "/:pathMatch(.*)*",
+    name: "PageNotFound",
+    component: () => import("@/views/PageNotFound.vue"),
+  },
 ];
 
 const router = createRouter({
