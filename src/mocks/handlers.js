@@ -3,38 +3,48 @@ import productsData from "./data/products";
 
 export const handlers = [
   // fetch offer by id
-  rest.get("/offers/:code", (req, res, ctx) => {
+  rest.get("https://api.deepspacestore.com/offers/:code", (req, res, ctx) => {
     const { code } = req.params;
-    const prodObj = productsData[code - 1];
+    const prodObj = productsData.find((obj) => obj.id == code);
+    // console.log("prodObj", prodObj);
     return res(ctx.status(200), ctx.json(prodObj));
   }),
 
-  rest.post("/login", (req, res, ctx) => {
-    // Persist user's authentication in the session
-    sessionStorage.setItem("is-authenticated", "true");
-    return res(
-      // Respond with a 200 status code
-      ctx.status(200)
-    );
-  }),
-  rest.get("/user", (req, res, ctx) => {
-    // Check if the user is authenticated in this session
-    const isAuthenticated = sessionStorage.getItem("is-authenticated");
-    if (!isAuthenticated) {
-      // If not authenticated, respond with a 403 error
-      return res(
-        ctx.status(403),
-        ctx.json({
-          errorMessage: "Not authorized",
-        })
-      );
-    }
-    // If authenticated, return a mocked user details
+  // fetch cep mocking viacep service
+  rest.get("https://viacep.com.br/ws/:zipcode/json/", (req, res, ctx) => {
+    const { zipcode } = req.params;
+    const cep = `${zipcode.substring(0, 5)}-${zipcode.substring(
+      zipcode.length - 3
+    )}`;
     return res(
       ctx.status(200),
       ctx.json({
-        username: "admin",
+        cep: cep,
+        logradouro: "Praça da Sé",
+        complemento: "lado ímpar",
+        bairro: "Sé",
+        localidade: "São Paulo",
+        uf: "SP",
+        ibge: "3550308",
+        gia: "1004",
+        ddd: "11",
+        siafi: "7107",
       })
     );
   }),
+
+  // post offer order
+  rest.post(
+    "https://api.deepspacestore.com/offers/:code/create_order",
+    async (req, res, ctx) => {
+      const { code } = req.params;
+      const oderData = await req.json();
+      console.log("code", code);
+      console.log("oderData", oderData);
+      return res(
+        // Respond with a 200 status code
+        ctx.status(200)
+      );
+    }
+  ),
 ];

@@ -34,6 +34,14 @@ const routes = [
             /* webpackChunkName: "productsDet" */ "@/views/products/ProductDetails.vue"
           ),
       },
+      {
+        path: "checkout/:offer",
+        name: "Checkout",
+        component: () =>
+          import(
+            /* webpackChunkName: "checkout" */ "@/views/checkout/CheckoutIndex.vue"
+          ),
+      },
     ],
   },
   // 404

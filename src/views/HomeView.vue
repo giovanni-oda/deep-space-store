@@ -136,12 +136,13 @@ onMounted(async () => {
 
 <style scoped>
 .hero-image {
-  background-image: url("https://picsum.photos/1920/1080?random");
+  /* background-image: url("https://picsum.photos/1920/1080?random"); */
+  /* background-color: rgba(255, 255, 255, 1); */
+  /* background-blend-mode: luminosity; */
+  background-image: url("@/assets/imgs/rocket-boy-hero.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: rgba(255, 255, 255, 1);
-  background-blend-mode: luminosity;
 }
 .hero-text {
   z-index: 10;
