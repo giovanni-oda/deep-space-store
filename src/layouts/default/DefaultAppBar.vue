@@ -24,7 +24,7 @@
         GO BACK
       </v-btn>
       <v-btn icon="mdi-cart" color="primary"></v-btn>
-      <div class="d-sm-none">
+      <div v-if="route.name === 'Home'" class="d-sm-none">
         <v-btn icon="mdi-menu" color="primary">
           <v-icon>mdi-menu</v-icon>
           <v-menu activator="parent">
