@@ -13,9 +13,11 @@
           v-for="item in menuItems"
           :key="item.id"
           :href="item.link"
-          class="text-uppercase text-primary text-decoration-none mr-3"
+          class="text-uppercase text-primary text-decoration-none"
         >
-          {{ item.title }}
+          <v-btn variant="plain" color="primary">
+            {{ item.title }}
+          </v-btn>
         </a>
       </div>
       <v-btn v-else variant="plain" color="primary" @click="router.go(-1)">
@@ -54,8 +56,6 @@ import { useRouter } from "vue-router";
 // constants
 const route = useRoute();
 const router = useRouter();
-
-console.log("route", route);
 
 // state
 const menuItems = [

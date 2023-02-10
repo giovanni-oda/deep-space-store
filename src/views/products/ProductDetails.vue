@@ -52,6 +52,7 @@
                     color="primary"
                     class="text-secondary"
                     :block="isMobile"
+                    @click="teste(product.id)"
                   >
                     Buy Now
                   </v-btn>
@@ -71,6 +72,9 @@
         </v-col>
       </v-row>
     </v-container>
+    <pre>
+      {{ mockStore.offer }}
+    </pre>
   </div>
 </template>
 
@@ -78,12 +82,14 @@
 // imports
 import { onMounted, computed } from "vue";
 import { useProductStore } from "@/store/product";
+import { useMockStore } from "@/store/mock";
 import { useRoute } from "vue-router";
 import { useDisplay } from "vuetify";
 
 // constants
-const productStore = useProductStore();
 const route = useRoute();
+const productStore = useProductStore();
+const mockStore = useMockStore();
 
 // computed
 const product = computed(() => productStore.getProduct);
@@ -91,6 +97,12 @@ const product = computed(() => productStore.getProduct);
 // state
 const { smAndDown: isMobile } = useDisplay();
 const prodId = route.params.id;
+
+// Methods
+async function teste(prodId) {
+  const resp = await mockStore.fetchOffer(prodId);
+  console.log("click", resp);
+}
 
 // hooks
 onMounted(() => {
