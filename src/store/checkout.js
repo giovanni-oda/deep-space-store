@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import { useFetch } from "@/composables/fetch";
-import { usePostFetch } from "@/composables/postFetch";
+import { useFetch } from "@/composables/Fetch";
+import { usePostFetch } from "@/composables/PostFetch";
 
 // msw mock service
 import { worker } from "../mocks/browser";

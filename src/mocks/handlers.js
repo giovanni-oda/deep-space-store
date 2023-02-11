@@ -1,5 +1,6 @@
 import { rest } from "msw";
 import productsData from "./data/products";
+import mockedZip from "./data/viaCepResponse.json";
 
 export const handlers = [
   // fetch offer by id
@@ -7,28 +8,21 @@ export const handlers = [
     const { code } = req.params;
     const prodObj = productsData.find((obj) => obj.id == code);
     // console.log("prodObj", prodObj);
-    return res(ctx.status(200), ctx.json(prodObj));
+    return res(ctx.status(200), ctx.delay(700), ctx.json(prodObj));
   }),
 
   // fetch cep mocking viacep service
-  rest.get("https://viacep.com.br/ws/:zipcode/json/", (req, res, ctx) => {
+  rest.get("https://viacep.com.br/ws/:zipcode/json/", async (req, res, ctx) => {
     const { zipcode } = req.params;
     const cep = `${zipcode.substring(0, 5)}-${zipcode.substring(
       zipcode.length - 3
     )}`;
     return res(
       ctx.status(200),
+      ctx.delay(700),
       ctx.json({
         cep: cep,
-        logradouro: "Praça da Sé",
-        complemento: "lado ímpar",
-        bairro: "Sé",
-        localidade: "São Paulo",
-        uf: "SP",
-        ibge: "3550308",
-        gia: "1004",
-        ddd: "11",
-        siafi: "7107",
+        ...mockedZip,
       })
     );
   }),

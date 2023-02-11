@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { useFetch } from "@/composables/fetch";
+import { useFetch } from "@/composables/Fetch";
 
 export const useProductStore = defineStore({
   id: "productStore",
