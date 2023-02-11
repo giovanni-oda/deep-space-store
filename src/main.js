@@ -18,3 +18,7 @@ const app = createApp(App);
 registerPlugins(app);
 
 app.mount("#app");
+
+// msw mock service
+import { worker } from "@/mocks/browser";
+worker.start({ onUnhandledRequest: "bypass" });

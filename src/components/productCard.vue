@@ -33,9 +33,9 @@
 
 <script setup>
 // imports
-import { ref, defineEmits } from "vue";
+import { ref } from "vue";
 
-// constants
+// constants (Macros)
 const props = defineProps(["title", "price", "description", "image"]);
 const emit = defineEmits(["goto-product"]);
 

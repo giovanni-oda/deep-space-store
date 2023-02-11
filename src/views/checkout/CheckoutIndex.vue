@@ -248,6 +248,7 @@
               title="Payment information"
               subtitle="Card Holder Data"
               class="w-100 pa-2 elevation-3 mt-4"
+              style="min-height: 435px"
             >
               <v-form ref="paymentForm">
                 <v-card-text>

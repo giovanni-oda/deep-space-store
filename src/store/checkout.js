@@ -2,10 +2,6 @@ import { defineStore } from "pinia";
 import { useFetch } from "@/composables/Fetch";
 import { usePostFetch } from "@/composables/PostFetch";
 
-// msw mock service
-import { worker } from "../mocks/browser";
-worker.start({ onUnhandledRequest: "bypass" });
-
 export const useCheckoutStore = defineStore({
   id: "checkoutStore",
 

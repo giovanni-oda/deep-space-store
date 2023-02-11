@@ -41,4 +41,14 @@ export const handlers = [
       );
     }
   ),
+
+  // fallback in case the fakestoreapi is down
+  rest.get("https://fakestoreapi.com/products", async (req, res, ctx) => {
+    return res(ctx.status(200), ctx.delay(700), ctx.json(productsData));
+  }),
+  rest.get("https://fakestoreapi.com/products/:code", (req, res, ctx) => {
+    const { code } = req.params;
+    const prodObj = productsData.find((obj) => obj.id == code);
+    return res(ctx.status(200), ctx.delay(700), ctx.json(prodObj));
+  }),
 ];

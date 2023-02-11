@@ -23,6 +23,7 @@ export const useProductStore = defineStore({
       if (!error.value) this.products = data.value;
       else {
         // TODO: handle error - send feedback to user.
+        console.error("Fakestoreapi", error.value);
       }
     },
     async fetchProduct(id) {
@@ -33,6 +34,7 @@ export const useProductStore = defineStore({
       if (!error.value) this.product = data.value;
       else {
         // TODO: handle error - send feedback to user.
+        console.error("Fakestoreapi", error.value);
       }
     },
     updateProduct(prod) {
