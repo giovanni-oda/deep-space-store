@@ -4,10 +4,10 @@ export default () => {
     if (val.length == 18) {
       let cnpj = val.trim();
 
-      cnpj = cnpj.replace(/\./g, '');
-      cnpj = cnpj.replace('-', '');
-      cnpj = cnpj.replace('/', '');
-      cnpj = cnpj.split('');
+      cnpj = cnpj.replace(/\./g, "");
+      cnpj = cnpj.replace("-", "");
+      cnpj = cnpj.replace("/", "");
+      cnpj = cnpj.split("");
 
       let v1 = 0;
       let v2 = 0;
@@ -70,12 +70,12 @@ export default () => {
   };
 
   const validateCPF = (val) => {
-    if (val.length == 14) {
+    if (val.length == 11) {
       let cpf = val.trim();
 
-      cpf = cpf.replace(/\./g, '');
-      cpf = cpf.replace('-', '');
-      cpf = cpf.split('');
+      cpf = cpf.replace(/\./g, "");
+      cpf = cpf.replace("-", "");
+      cpf = cpf.split("");
 
       // console.log(cpf);
 
@@ -127,18 +127,18 @@ export default () => {
     }
   };
 
-  const validadeCelPhone = (val) => {
+  const validateCelPhone = (val) => {
     if (val) {
-      val = val + '';
-      const num = val.replace(/\D/g, '');
+      val = val + "";
+      const num = val.replace(/\D/g, "");
       if (num.length != 11) return false;
       if (num.slice(0, 2) < 11) return false;
       if (num[2] != 9) return false;
       if (num[3] < 7) return false;
-      if (num.slice(-7) == '0000000') return false;
-      if (num.slice(-7) == '1111111') return false;
-      if (num.slice(-7) == '2222222') return false;
-      if (num.slice(-7) == '8887777') return false;
+      if (num.slice(-7) == "0000000") return false;
+      if (num.slice(-7) == "1111111") return false;
+      if (num.slice(-7) == "2222222") return false;
+      if (num.slice(-7) == "8887777") return false;
     }
     return true;
   };
@@ -146,6 +146,6 @@ export default () => {
   return {
     validateCNPJ,
     validateCPF,
-    validadeCelPhone,
+    validateCelPhone,
   };
 };

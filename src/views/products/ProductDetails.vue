@@ -25,9 +25,19 @@
               <v-col cols="12" sm="6">
                 <v-img
                   class="ma-4"
+                  max-height="500"
                   :src="product.image"
-                  max-height="500px"
-                ></v-img>
+                  :lazy-src="product.image.split('.')[0] + '_thumb.jpg'"
+                >
+                  <template v-slot:placeholder>
+                    <div class="d-flex align-center justify-center fill-height">
+                      <v-progress-circular
+                        color="grey-lighten-4"
+                        indeterminate
+                      ></v-progress-circular>
+                    </div>
+                  </template>
+                </v-img>
               </v-col>
               <v-col cols="12" sm="6">
                 <div class="details mt-12 mb-sm-8 mr-sm-4">

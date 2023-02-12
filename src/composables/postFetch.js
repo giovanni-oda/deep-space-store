@@ -10,8 +10,11 @@ export async function usePostFetch(url, payload) {
       body: JSON.stringify(payload),
     });
     const json = await res.json();
-    // console.log("json", json);
-    data.value = json;
+    data.value = {
+      status: res.status,
+      statusText: res.statusText,
+      json: json,
+    };
   } catch (err) {
     error.value = err;
   }

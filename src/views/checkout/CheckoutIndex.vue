@@ -1,7 +1,7 @@
 <template>
   <div class="checkout">
     <section class="pt-8">
-      <v-container class="fill-height">
+      <v-container>
         <div class="d-flex w-100">
           <h3 class="text-primary text-uppercase">Checkout</h3>
           <v-spacer></v-spacer>
@@ -13,8 +13,17 @@
             <v-icon size="small">mdi-chevron-right</v-icon>
           </router-link>
         </div>
-        <v-row>
-          <v-col class="d-flex flex-wrap align-left" v-if="offer">
+        <v-row v-if="!offer">
+          <div class="d-flex flex-column align-center w-100 py-16">
+            <span class="mb-6">Please wait! Loading offer...</span>
+            <v-progress-circular
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
+          </div>
+        </v-row>
+        <v-row v-else>
+          <v-col class="d-flex flex-wrap align-left">
             <v-card
               title="Product information"
               :subtitle="`Offer Code ${offer.id}`"
@@ -48,7 +57,11 @@
                     Description:
                   </span>
                   <div class="d-flex pl-4 mt-2 mt-sm-0">
-                    <img :src="offer.image" :alt="offer.title" height="30" />
+                    <img
+                      :src="offer.image.split('.')[0] + '_thumb.jpg'"
+                      :alt="offer.title"
+                      height="30"
+                    />
                     <span class="text-primary ml-4">{{ offer.title }}</span>
                   </div>
                 </v-col>
@@ -95,15 +108,6 @@
               </v-row>
             </v-card>
           </v-col>
-          <v-col v-else>
-            <div class="d-flex flex-column align-center">
-              <span class="mb-6">Please wait! Loading offer...</span>
-              <v-progress-circular
-                indeterminate
-                color="primary"
-              ></v-progress-circular>
-            </div>
-          </v-col>
         </v-row>
         <v-row class="mb-8">
           <v-col cols="12" md="8">
@@ -125,6 +129,7 @@
                     <v-col cols="12" sm="6">
                       <v-text-field
                         v-model="contactData.email"
+                        :rules="[(v) => checkEmailFormat(v) || 'Invalid email']"
                         color="primary"
                         label="Email"
                         required
@@ -133,23 +138,21 @@
                     <v-col cols="12" sm="6">
                       <v-text-field
                         v-model="contactData.phone"
-                        :rules="[(v) => !!v || 'The Phone field is required']"
+                        type="number"
+                        :counter="11"
+                        :rules="[
+                          (v) => !!v || 'The Phone field is required',
+                          (v) => (v && v.length == 11) || 'Invalid Format',
+                          (v) => validateCelPhone(v) || 'Invalid mobile number',
+                        ]"
                         color="primary"
-                        label="Phone *"
+                        label="Mobile Phone *"
+                        hint="Area code + 9 numbers"
+                        persistent-hint
                         required
                       ></v-text-field>
                     </v-col>
                   </v-row>
-                  <!-- <div>
-                    <v-btn
-                      color="secondary"
-                      class="mt-4"
-                      block
-                      @click="validate"
-                    >
-                      Validate
-                    </v-btn>
-                  </div> -->
                 </v-form>
               </v-card-text>
               <v-card-title class="pb-0">Shipping Information</v-card-title>
@@ -163,13 +166,14 @@
                         color="primary"
                         type="number"
                         :counter="8"
-                        hint="Enter only numbers."
+                        hint="Enter exactly 8 numbers"
                         :rules="[
                           (v) => !!v || 'Required field',
                           (v) => (v && v.length == 8) || 'Invalid Format',
                         ]"
                         label="Postal Code *"
                         required
+                        persistent-hint
                       ></v-text-field>
                     </v-col>
                     <v-col :cols="isMobile ? 4 : 2">
@@ -255,10 +259,20 @@
                   <v-text-field
                     v-model="paymentData.cpf"
                     color="primary"
-                    :rules="[(v) => !!v || 'Required field']"
-                    :disabled="intLoading"
+                    type="number"
+                    :counter="11"
+                    :rules="[
+                      (v) => !!v || 'Required field',
+                      (v) => (v && v.length == 11) || 'Invalid Format',
+                      (v) =>
+                        validateCPF(v) ||
+                        v === '00000000000' ||
+                        'Invalid CPF number',
+                    ]"
+                    hint="Enter exactly 11 numbers"
                     label="CPF *"
                     required
+                    persistent-hint
                   ></v-text-field>
                 </v-card-text>
                 <v-card-title class="pb-0">Available methods</v-card-title>
@@ -279,12 +293,40 @@
                     <v-radio label="PIX" value="pix" class="ml-2"></v-radio>
                   </v-radio-group>
                   <v-expand-transition>
-                    <div v-if="paymentData.type === 'creditCard'">
+                    <div
+                      v-if="paymentData.type === 'creditCard'"
+                      class="rounded"
+                      style="position: relative"
+                    >
+                      <v-overlay
+                        v-model="paymentLoading"
+                        contained
+                        persistent
+                        class="align-center justify-center"
+                      >
+                        <!-- <v-btn color="success" @click="processOverlay = false">
+                          Hide Overlay
+                        </v-btn> -->
+                        <div
+                          class="d-flex flex-column align-center justify-center text-primary"
+                        >
+                          <v-progress-circular
+                            color="primary"
+                            indeterminate
+                            class="mb-4"
+                          ></v-progress-circular>
+                          <span>Processing Payment</span>
+                          <span>Please wait</span>
+                        </div>
+                      </v-overlay>
                       <v-text-field
                         v-model="paymentData.cardData.number"
+                        oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                        maxlength="16"
                         color="primary"
+                        type="number"
                         :rules="[(v) => !!v || 'Required field']"
-                        :disabled="intLoading"
+                        :disabled="paymentLoading"
                         label="Card Number *"
                         required
                       ></v-text-field>
@@ -292,7 +334,7 @@
                         v-model="paymentData.cardData.holder"
                         color="primary"
                         :rules="[(v) => !!v || 'Required field']"
-                        :disabled="intLoading"
+                        :disabled="paymentLoading"
                         label="Holder Name *"
                         required
                       ></v-text-field>
@@ -302,7 +344,8 @@
                             v-model="paymentData.cardData.validity"
                             color="primary"
                             :rules="[(v) => !!v || 'Required']"
-                            :disabled="intLoading"
+                            :disabled="paymentLoading"
+                            maxlength="5"
                             hint="mm/yy"
                             label="Expiration Date *"
                             required
@@ -313,7 +356,9 @@
                             v-model="paymentData.cardData.cvv"
                             color="primary"
                             :rules="[(v) => !!v || 'Required']"
-                            :disabled="intLoading"
+                            :disabled="paymentLoading"
+                            oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                            maxlength="3"
                             label="CVV *"
                             required
                           ></v-text-field
@@ -335,7 +380,7 @@
                       :disabled="isDisabled()"
                       @click="doCheckout()"
                     >
-                      Finalize purchase
+                      PAY & Finalize
                     </v-btn>
                   </div>
                 </v-card-text>
@@ -361,14 +406,17 @@
 
 <script setup>
 // imports
-import { onMounted, computed, watch, ref } from "vue";
+import { onMounted, onUnmounted, computed, watch, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useCheckoutStore } from "@/store/checkout";
 import { useDisplay } from "vuetify";
+import useValidationLib from "@/composables/ValidationLib";
 
 // constants
 const checkoutStore = useCheckoutStore();
 const route = useRoute();
+const { validateCelPhone } = useValidationLib();
+const { validateCPF } = useValidationLib();
 
 // computed
 const offer = computed(() => checkoutStore.getOffer);
@@ -421,6 +469,7 @@ const paymentData = ref({
     cvv: "",
   },
 });
+const paymentLoading = ref(false);
 
 // Methods
 function handleAmount(type) {
@@ -445,6 +494,7 @@ async function setAddressData(val) {
 }
 
 function isDisabled() {
+  if (paymentLoading.value) return true;
   if (!zipAddress.value) return true;
   if (!paymentData.value.type) return true;
   return false;
@@ -454,19 +504,40 @@ async function doCheckout() {
   const { valid: contactValid } = await contactForm.value.validate();
   const { valid: shippingValid } = await shippingForm.value.validate();
   const { valid: paymentValid } = await paymentForm.value.validate();
-
-  console.log("contactValid", contactValid);
-  console.log("shippingValid", shippingValid);
-  console.log("paymentValid", paymentValid);
-
   if (contactValid && shippingValid && paymentValid) {
-    console.log("all forms valid");
+    // console.log("all forms valid");
+    paymentLoading.value = true;
+    cart.value.cpf = paymentData.value.cpf;
+    cart.value.offerId = offer.value.id;
+    cart.value.subtotal = offer.value.price * cart.value.amount;
+    cart.value.contactData = { ...contactData.value };
+    cart.value.shippingData = { ...shippingData.value };
+    cart.value.paymentData = { ...paymentData.value };
+    // console.log("cart.value", cart.value);
+    const resp = await checkoutStore.createOrder(1, { ...cart.value });
+    if (resp.paymentStatus && resp.paymentStatus === "PAID") {
+      paymentLoading.value = false;
+      console.log("redirect page");
+    } else {
+      paymentLoading.value = false;
+    }
   }
+}
+
+function checkEmailFormat(val) {
+  if (val === "") return true;
+  const pattern =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return pattern.test(val);
 }
 
 // hooks
 onMounted(() => {
   checkoutStore.fetchOffer(code);
+});
+
+onUnmounted(() => {
+  checkoutStore.$patch({ offer: null });
 });
 </script>
 
@@ -476,5 +547,12 @@ onMounted(() => {
   border-radius: 20px;
   align-items: center;
   justify-content: space-between;
+}
+</style>
+<style>
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style>

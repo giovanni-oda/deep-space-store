@@ -32,13 +32,22 @@ export const handlers = [
     "https://api.deepspacestore.com/offers/:code/create_order",
     async (req, res, ctx) => {
       const { code } = req.params;
-      const oderData = await req.json();
-      console.log("code", code);
-      console.log("oderData", oderData);
-      return res(
-        // Respond with a 200 status code
-        ctx.status(200)
-      );
+      const orderData = await req.json();
+      // console.log("orderData", orderData);
+      const { cpf } = orderData;
+      let resCode = null;
+      let resBody = {};
+      if (!code || !orderData || !cpf || cpf === "00000000000") {
+        resCode = 403;
+        resBody = { error: true, errorMessage: "CPF is invalid" };
+      } else {
+        resBody = {
+          successMessage: "Payment Processed",
+          paymentStatus: "PAID",
+        };
+        resCode = 200;
+      }
+      return res(ctx.status(resCode), ctx.delay(1000), ctx.json(resBody));
     }
   ),
 
