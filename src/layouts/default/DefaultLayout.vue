@@ -29,5 +29,4 @@ const appStore = useAppStore();
 
 // computed
 const feedBack = computed(() => appStore.getFeedBack);
-console.log("feedBack", feedBack.value);
 </script>

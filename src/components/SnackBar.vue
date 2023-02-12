@@ -3,7 +3,7 @@
     v-model="showAlert"
     :timeout="timeOut"
     :color="themeData[theme].bg"
-    :location="mobile ? 'top' : 'bottom'"
+    :location="isMobile ? 'top' : 'bottom'"
     @update:model-value="handleOpenClose"
   >
     <v-icon
@@ -35,7 +35,7 @@ import { ref } from "vue";
 import { useDisplay } from "vuetify";
 
 // constants
-const { mobile } = useDisplay();
+const { smAndDown: isMobile } = useDisplay();
 
 // emits
 const emit = defineEmits(["resetFeedBack"]);

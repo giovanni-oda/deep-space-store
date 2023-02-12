@@ -9,12 +9,16 @@ export const useCheckoutStore = defineStore({
   state: () => ({
     offer: null,
     offers: [],
+    order: null,
+    orders: [],
     zip: null,
   }),
 
   getters: {
     getOffer: (state) => state.offer,
     getOffers: (state) => state.offers,
+    getOrder: (state) => state.order,
+    getOrders: (state) => state.orders,
     getZip: (state) => state.zip,
   },
 
@@ -41,13 +45,15 @@ export const useCheckoutStore = defineStore({
         console.error(error);
       }
     },
-    async createOrder(code, oderData) {
+    async createOrder(code, orderData) {
       const { data, error } = await usePostFetch(
         `https://api.deepspacestore.com/offers/${code}/create_order`,
-        oderData
+        orderData
       );
       // console.log('resp', error.value, data.value);
       if (!error.value) {
+        this.order = orderData;
+        this.order.id = "xxxx";
         const appStore = useAppStore();
         if (data.value.status === 200) {
           appStore.feedBack = {

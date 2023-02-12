@@ -174,6 +174,8 @@
                         label="Postal Code *"
                         required
                         persistent-hint
+                        @blur="handleZip()"
+                        @keypress.enter="handleZip()"
                       ></v-text-field>
                     </v-col>
                     <v-col :cols="isMobile ? 4 : 2">
@@ -260,6 +262,7 @@
                     v-model="paymentData.cpf"
                     color="primary"
                     type="number"
+                    :disabled="paymentLoading || pixLoading"
                     :counter="11"
                     :rules="[
                       (v) => !!v || 'Required field',
@@ -280,6 +283,7 @@
                 <v-card-text class="pt-2">
                   <v-radio-group
                     v-model="paymentData.type"
+                    :disabled="paymentLoading || pixLoading"
                     class="ml-0"
                     color="primary"
                     inline
@@ -304,9 +308,6 @@
                         persistent
                         class="align-center justify-center"
                       >
-                        <!-- <v-btn color="success" @click="processOverlay = false">
-                          Hide Overlay
-                        </v-btn> -->
                         <div
                           class="d-flex flex-column align-center justify-center text-primary"
                         >
@@ -367,7 +368,47 @@
                     </div>
                   </v-expand-transition>
                   <v-expand-transition>
-                    <div v-if="paymentData.type === 'pix'">pix</div>
+                    <div
+                      v-if="paymentData.type === 'pix'"
+                      rounded
+                      style="position: relative"
+                    >
+                      <div class="text-center">
+                        <v-overlay
+                          v-model="pixLoading"
+                          contained
+                          persistent
+                          class="align-center justify-center"
+                        >
+                          <div
+                            class="d-flex flex-column align-center justify-center text-primary"
+                          >
+                            <v-progress-circular
+                              color="primary"
+                              indeterminate
+                              class="mb-4"
+                            ></v-progress-circular>
+                            <span>Processing</span>
+                            <span>Simulated Payment</span>
+                          </div>
+                        </v-overlay>
+                        <!-- <span class="mb-1">Pix QR Code</span> -->
+                        <span class="text-caption text-green">
+                          Click to Simulate Payment
+                        </span>
+                        <v-img
+                          width="150"
+                          src="@/assets/imgs/Qr_Code_Temp.png"
+                          class="mx-auto mb-2"
+                          @click="simulatePix()"
+                          style="cursor: pointer"
+                        ></v-img>
+                        <span class="pt-4 text-grey">
+                          Point your camera at the QR Code or use the key below:
+                        </span>
+                        <p class="text-primary">payment@deepspacestore.com</p>
+                      </div>
+                    </div>
                   </v-expand-transition>
                   <div class="mt-9">
                     <v-btn
@@ -407,14 +448,17 @@
 <script setup>
 // imports
 import { onMounted, onUnmounted, computed, watch, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useCheckoutStore } from "@/store/checkout";
+import { useAppStore } from "@/store/app";
 import { useDisplay } from "vuetify";
 import useValidationLib from "@/composables/ValidationLib";
 
 // constants
 const checkoutStore = useCheckoutStore();
+const appStore = useAppStore();
 const route = useRoute();
+const router = useRouter();
 const { validateCelPhone } = useValidationLib();
 const { validateCPF } = useValidationLib();
 
@@ -470,6 +514,7 @@ const paymentData = ref({
   },
 });
 const paymentLoading = ref(false);
+const pixLoading = ref(false);
 
 // Methods
 function handleAmount(type) {
@@ -495,33 +540,64 @@ async function setAddressData(val) {
 
 function isDisabled() {
   if (paymentLoading.value) return true;
+  if (paymentData.value.type === "pix") return true;
   if (!zipAddress.value) return true;
   if (!paymentData.value.type) return true;
   return false;
 }
 
 async function doCheckout() {
+  const valid = await isAllFormsValid();
+  if (valid) {
+    paymentLoading.value = true;
+    setCartData();
+    const resp = await checkoutStore.createOrder(1, { ...cart.value });
+    if (resp.paymentStatus && resp.paymentStatus === "PAID") {
+      router.push({ name: "Success" });
+    }
+    paymentLoading.value = false;
+  } else {
+    appStore.feedBack = {
+      text: "One or more required fields are missing.",
+      theme: "error",
+      timeOut: 5000,
+    };
+  }
+}
+
+async function simulatePix() {
+  const valid = await isAllFormsValid();
+  if (valid) {
+    pixLoading.value = true;
+    setCartData();
+    const resp = await checkoutStore.createOrder(1, { ...cart.value });
+    if (resp.paymentStatus && resp.paymentStatus === "PAID") {
+      router.push({ name: "Success" });
+    }
+    pixLoading.value = false;
+  } else {
+    appStore.feedBack = {
+      text: "To complete the simulation fill in the required fields.",
+      theme: "error",
+      timeOut: 5000,
+    };
+  }
+}
+
+async function isAllFormsValid() {
   const { valid: contactValid } = await contactForm.value.validate();
   const { valid: shippingValid } = await shippingForm.value.validate();
   const { valid: paymentValid } = await paymentForm.value.validate();
-  if (contactValid && shippingValid && paymentValid) {
-    // console.log("all forms valid");
-    paymentLoading.value = true;
-    cart.value.cpf = paymentData.value.cpf;
-    cart.value.offerId = offer.value.id;
-    cart.value.subtotal = offer.value.price * cart.value.amount;
-    cart.value.contactData = { ...contactData.value };
-    cart.value.shippingData = { ...shippingData.value };
-    cart.value.paymentData = { ...paymentData.value };
-    // console.log("cart.value", cart.value);
-    const resp = await checkoutStore.createOrder(1, { ...cart.value });
-    if (resp.paymentStatus && resp.paymentStatus === "PAID") {
-      paymentLoading.value = false;
-      console.log("redirect page");
-    } else {
-      paymentLoading.value = false;
-    }
-  }
+  return contactValid && shippingValid && paymentValid;
+}
+
+function setCartData() {
+  cart.value.cpf = paymentData.value.cpf;
+  cart.value.offerId = offer.value.id;
+  cart.value.subtotal = offer.value.price * cart.value.amount;
+  cart.value.contactData = { ...contactData.value };
+  cart.value.shippingData = { ...shippingData.value };
+  cart.value.paymentData = { ...paymentData.value };
 }
 
 function checkEmailFormat(val) {

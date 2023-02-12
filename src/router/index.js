@@ -34,12 +34,21 @@ const routes = [
             /* webpackChunkName: "productsDet" */ "@/views/products/ProductDetails.vue"
           ),
       },
+      // checkout
       {
         path: "checkout/:offer",
         name: "Checkout",
         component: () =>
           import(
             /* webpackChunkName: "checkout" */ "@/views/checkout/CheckoutIndex.vue"
+          ),
+      },
+      {
+        path: "checkout/success",
+        name: "Success",
+        component: () =>
+          import(
+            /* webpackChunkName: "checkout" */ "@/views/checkout/SuccessView.vue"
           ),
       },
     ],
