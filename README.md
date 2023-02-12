@@ -1,4 +1,4 @@
-# essentials
+# Deep Space Store
 
 ## Project setup
 
@@ -39,19 +39,22 @@ npm run build
 pnpm build
 ```
 
-### Lints and fixes files
+### Project Informations
 
 ```
-# yarn
-yarn lint
+# App Version
+1.0.1
 
-# npm
-npm run lint
+# Framework
+Vue JS (ver 3.2)
 
-# pnpm
-pnpm lint
+# CSS Framework
+Vuetify (ver 3.0)
+
+# Vue State Management
+Pinia (ver 2.0)
 ```
 
-### Customize configuration
+## Demo
 
-See [Configuration Reference](https://vitejs.dev/config/).
+See [Live Link](https://deep-space-store.web.app).
