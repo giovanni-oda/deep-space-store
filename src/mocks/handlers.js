@@ -47,7 +47,7 @@ export const handlers = [
         };
         resCode = 200;
       }
-      return res(ctx.status(resCode), ctx.delay(1000), ctx.json(resBody));
+      return res(ctx.status(resCode), ctx.delay(1500), ctx.json(resBody));
     }
   ),
 

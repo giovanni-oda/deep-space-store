@@ -370,7 +370,7 @@
                   <v-expand-transition>
                     <div
                       v-if="paymentData.type === 'pix'"
-                      rounded
+                      class="rounded"
                       style="position: relative"
                     >
                       <div class="text-center">

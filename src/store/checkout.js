@@ -52,10 +52,14 @@ export const useCheckoutStore = defineStore({
       );
       // console.log('resp', error.value, data.value);
       if (!error.value) {
-        this.order = orderData;
-        this.order.orderId = createHash(`OFFER_${code}`);
         const appStore = useAppStore();
         if (data.value.status === 200) {
+          this.order = {
+            orderId: createUniqueId(),
+            ...orderData,
+          };
+          this.order.paymentData.status = data.value.json.paymentStatus;
+          console.log("this.order", this.order);
           appStore.feedBack = {
             text: "Successful Payment!",
             theme: "success",
@@ -77,16 +81,13 @@ export const useCheckoutStore = defineStore({
   },
 });
 
-// internal static function
-function createHash(codeStr) {
-  var hash = 0,
-    i,
-    chr;
-  if (codeStr.length === 0) return hash;
-  for (i = 0; i < codeStr.length; i++) {
-    chr = codeStr.charCodeAt(i);
-    hash = (hash << 5) - hash + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return Math.abs(hash);
+// generates random id
+function createUniqueId() {
+  let s4 = () => {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  };
+  //return id of format 'aaaaaaaa'-'aaaa'-'aaaa'-'aaaa'-'aaaaaaaaaaaa'
+  return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4() + s4() + s4()}`;
 }
