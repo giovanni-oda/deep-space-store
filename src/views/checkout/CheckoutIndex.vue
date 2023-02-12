@@ -595,6 +595,7 @@ function setCartData() {
   cart.value.cpf = paymentData.value.cpf;
   cart.value.offerId = offer.value.id;
   cart.value.subtotal = offer.value.price * cart.value.amount;
+  cart.value.item = { ...offer.value };
   cart.value.contactData = { ...contactData.value };
   cart.value.shippingData = { ...shippingData.value };
   cart.value.paymentData = { ...paymentData.value };

@@ -53,7 +53,7 @@ export const useCheckoutStore = defineStore({
       // console.log('resp', error.value, data.value);
       if (!error.value) {
         this.order = orderData;
-        this.order.id = "xxxx";
+        this.order.orderId = createHash(`OFFER_${code}`);
         const appStore = useAppStore();
         if (data.value.status === 200) {
           appStore.feedBack = {
@@ -65,7 +65,7 @@ export const useCheckoutStore = defineStore({
           appStore.feedBack = {
             text: `Error! Server Message: ${data.value.json.errorMessage}`,
             theme: "error",
-            timeOut: 5000,
+            timeOut: 7000,
           };
         }
         return data.value.json;
@@ -76,3 +76,17 @@ export const useCheckoutStore = defineStore({
     },
   },
 });
+
+// internal static function
+function createHash(codeStr) {
+  var hash = 0,
+    i,
+    chr;
+  if (codeStr.length === 0) return hash;
+  for (i = 0; i < codeStr.length; i++) {
+    chr = codeStr.charCodeAt(i);
+    hash = (hash << 5) - hash + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return Math.abs(hash);
+}
